@@ -6,7 +6,7 @@ int main()
 {
 
 
-    printf("nig");
+    printf("nigger");
     return 0;
 }
 
