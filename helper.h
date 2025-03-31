@@ -17,3 +17,15 @@ typedef struct {
     int count;
 } PositionSet;
 
+// Function prototypes
+void initializeSystem();
+void displayGrid();
+void displayGameState();
+bool isInSet(Position pos, PositionSet set);
+void addToSet(Position pos, PositionSet *set);
+void removeFromSet(Position pos, PositionSet *set);
+bool nextPlayerMove(Position pos);
+bool isGameOver();
+void determineWinner();
+bool isWinningConfiguration(PositionSet set);
+Position inputPosition();
