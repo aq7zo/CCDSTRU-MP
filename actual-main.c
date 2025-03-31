@@ -4,9 +4,8 @@
 
 int main() 
 {
+    // Main logic will be here.
 
-
-    printf("nigger");
     return 0;
 }
 
