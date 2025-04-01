@@ -16,6 +16,56 @@ PositionSet C[4];
 PositionSet T;
 
 int main() {
+    int choice;
+    bool exitGame = false;
+    clearScreen();
+    
+    while (!exitGame) {
+        displayMenu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        clearInputBuffer();
+        
+        switch (choice) {
+            case 1:
+                playGame();
+                break;
+            case 2:
+                exitGame = true;
+                printf("Thanks for playing! Goodbye.\n");
+                break;
+            default:
+                clearScreen();
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+    
+    return 0;
+}
+
+// Display the main menu
+void displayMenu() {
+    printf("\n  ___ _                            _   ___  _         _             _ \n");
+    printf(" | _ \\ |__ _ __ ___   __ _ _ _  __| | |   \\(_)____ __| |__ _ __ ___| |\n");
+    printf(" |  _/ / _` / _/ -_) / _` | ' \\/ _` | | |) | (_-< '_ \\ / _` / _/ -_)_|\n");
+    printf(" |_| |_\\__,_\\__\\___| \\__,_|_||_\\__,_| |___/|_/__/ .__/_\\__,_\\__\\___(_)\n");
+    printf("                                                |_|                   \n");
+    printf("1. Play Game\n");
+    printf("2. Quit\n");
+    printf("=================================\n");
+}
+
+// Clear input buffer
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+// Play the game
+void playGame() {
+    // clears the screen
+    clearScreen();
+
     // Initialize the system
     initializeSystem();
     
@@ -27,10 +77,8 @@ int main() {
         printf("Enter position (x,y) to place: ");
         Position pos = inputPosition();
         
-        if (nextPlayerMove(pos)) {
-            printf("Move accepted!\n");
-        } else {
-            printf("Invalid move! Try again.\n");
+        if (!nextPlayerMove(pos)) {
+            printf("Invalid move! Try again.\n"); // Displays if position is already taken.
         }
         
         over = isGameOver();
@@ -40,7 +88,19 @@ int main() {
     displayGrid();
     determineWinner();
     
-    return 0;
+    // Ask if player wants to play again
+    printf("\nGame ended. What would you like to do next?\n");
+    printf("1. Play Again\n");
+    printf("2. Return to Main Menu\n");
+    printf("Enter your choice: ");
+    
+    int choice;
+    scanf("%d", &choice);
+    clearInputBuffer();
+    
+    if (choice == 1) {
+        playGame();  // Restart the game
+    }
 }
 
 // Initialize the system according to specifications
@@ -54,7 +114,7 @@ void initializeSystem() {
     go = false;
     over = false;
     
-    // Initialize set F to contain all positions in P
+    // Initialize how many free positions are in the grid
     F.count = 0;
     for (int i = 1; i <= MAX_A; i++) {
         for (int j = 1; j <= MAX_A; j++) {
@@ -93,7 +153,7 @@ void initializeSystem() {
         C[3].positions[i].y = i + 1;
     }
     
-    // Initialize set T (identity relation)
+    // Initialize set T (identity relation), Notice how it takes the shape of a Main diagonal as well.
     T.count = 4;
     for (int i = 0; i < 4; i++) {
         T.positions[i].x = i + 1;
@@ -133,6 +193,7 @@ void removeFromSet(Position pos, PositionSet *set) {
 
 // Process the next player move according to system rules
 bool nextPlayerMove(Position pos) {
+    clearScreen();
     // Case 1: Uno's turn to add a position
     if (turn && go && isInSet(pos, F)) {
         addToSet(pos, &Uno);
@@ -141,7 +202,7 @@ bool nextPlayerMove(Position pos) {
         go = !go;
         return true;
     }
-    // Case 2: Remove a position from Uno or Tres
+    // Case 2: Dos' turn to remove a position from Uno or Tres
     else if (!turn && (isInSet(pos, Uno) || isInSet(pos, Tres))) {
         removeFromSet(pos, &Uno);
         removeFromSet(pos, &Tres);
@@ -247,13 +308,27 @@ void displayGameState() {
 Position inputPosition() {
     Position pos;
     scanf("%d,%d", &pos.x, &pos.y);
+    clearInputBuffer();
     
     // Validate input
     while (pos.x < 1 || pos.x > MAX_A || pos.y < 1 || pos.y > MAX_A) {
-        printf("Invalid position! Enter values between 1 and 4: ");
+        clearScreen();
+        printf("Invalid position! Enter values between 1 and 4\n"); // Displays if input is invalid
+
+        displayGrid();
+        displayGameState();
+        
+        printf("Enter position (x,y) to place: ");
         scanf("%d,%d", &pos.x, &pos.y);
     }
     
     return pos;
 }
 
+void clearScreen() {
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}

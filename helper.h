@@ -8,12 +8,12 @@
 
 // Data structures to represent the system
 typedef struct {
-    int x;
-    int y;
+    int x; // column position
+    int y; // row position
 } Position;
 
 typedef struct {
-    Position positions[SIZE_P];
+    Position positions[SIZE_P]; // there are 16 positions to choose from
     int count;
 } PositionSet;
 
@@ -29,3 +29,7 @@ bool isGameOver();
 void determineWinner();
 bool isWinningConfiguration(PositionSet set);
 Position inputPosition();
+void displayMenu();
+void playGame();
+void clearInputBuffer();
+void clearScreen();
